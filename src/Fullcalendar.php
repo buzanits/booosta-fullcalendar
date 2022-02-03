@@ -1,6 +1,9 @@
 <?php
 namespace booosta\fullcalendar;
 
+use \booosta\Framework as b;
+b::init_module('fullcalendar');
+
 class Fullcalendar extends \booosta\calendar\Calendar
 {
   use moduletrait_fullcalendar;
