@@ -82,7 +82,6 @@ class Fullcalendar extends \booosta\calendar\Calendar
       if($d['background']) $extradata .= "rendering: 'background', ";
 
       $eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['date']}', $enddate $extradata}, ";
-      #$eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['date']}', $url$enddate$color$editable}, ";
     endforeach;
 
     if($this->eventClickCode)
@@ -119,7 +118,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
     if($this->minTime) $extracode .= "minTime: '$this->minTime', ";
     if($this->maxTime) $extracode .= "maxTime: '$this->maxTime', ";
 
-    $code = "$('#$this->id').fullCalendar({
+    $code = "var $this->id = new FullCalendar.Calendar($('#$this->id'), {
       header: { left: 'prev,next today', center: 'title', right: '$this->availableViews' },
       locale: '$this->lang', buttonIcons: false, weekNumbers: true, editable: true, eventLimit: true, timeFormat: 'H:mm',
       slotLabelFormat: 'H:mm', defaultView: '$this->defaultview', $extracode
@@ -127,7 +126,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
       eventRightclick: function(calEvent, jsEvent, view) { $eventRightClickCode },
       dayClick: function(date, jsEvent, view) { $dayClickCode }, eventDrop: function(event, delta, revertFunc) { $dragDropCode },
       eventResize: function(event, delta, revertFunc) { $resizeCode },
-      }); 
+      }); $this->id.render();
     ";
 
     if(is_object($this->topobj) && is_a($this->topobj, "\\booosta\\webapp\\webapp")):
