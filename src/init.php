@@ -15,3 +15,39 @@ trait webapp
             <link rel='stylesheet' type='text/css' href='{$this->base_dir}$libpath/main.min.css' />\n");
   }
 }
+
+
+trait actions
+{
+  protected function action_fullcalendar_move()
+  {
+    $newstart = date('Y-m-d H:i:s', strtotime($this->VAR['starttime']));
+    #\booosta\debug("id: $this->id, newstart: $newstart");
+
+    $obj = $this->get_dbobject();
+    $oldstart = $obj->get('starttime');
+    $oldend = $obj->get('endtime');
+    $duration = strtotime($oldend) - strtotime($oldstart);
+    if($duration <= 0) $duration = 3600;
+
+    $obj->set('starttime', $newstart);
+    $obj->set('endtime', date('Y-m-d H:i:s', strtotime($newstart) + $duration));
+    $obj->update();
+
+    booosta\ajax\Ajax::print_response(null, ['result' => '']);
+    $this->no_output = true;
+  }
+
+  protected function action_fullcalendar_resize()
+  {
+    $newend = date('Y-m-d H:i:s', strtotime($this->VAR['endtime']));
+    #\booosta\debug("id: $this->id, newend: $newend");
+
+    $obj = $this->get_dbobject();
+    $obj->set('endtime', $newend);
+    $obj->update();
+
+    booosta\ajax\Ajax::print_response(null, ['result' => '']);
+    $this->no_output = true;
+  }
+}

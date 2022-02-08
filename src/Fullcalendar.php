@@ -34,7 +34,6 @@ class Fullcalendar extends \booosta\calendar\Calendar
     endif;
   }
 
-  public function set_enddate($date) { $this->date = date('Y-m-d', strtotime($date)); }
   public function set_defaultview($defaultview) { $this->defaultview = $defaultview; }
   public function set_eventClickCode($code) { $this->eventClickCode = $code; }
   public function set_eventRightClickCode($code) { $this->eventRightClickCode = $code; }
@@ -69,10 +68,10 @@ class Fullcalendar extends \booosta\calendar\Calendar
 
       if($d['enddate']):
         $enddate = "end: '{$d['enddate']}', ";
-      elseif(strlen($d['date']) == 10):   // date without time is given = event is all day
+      elseif(strlen($d['startdate']) == 10):   // date without time is given = event is all day
         $enddate = '';
       else:
-        $enddate = "end: '" . date('Y-m-d H:i:s', strtotime($d['date'] . ' +1 hour')) . "', ";
+        $enddate = "end: '" . date('Y-m-d H:i:s', strtotime($d['startdate'] . ' +1 hour')) . "', ";
       endif;
 
       $extradata = '';
@@ -81,29 +80,35 @@ class Fullcalendar extends \booosta\calendar\Calendar
       if($d['readonly']) $extradata .= 'editable: false, ';
       if($d['background']) $extradata .= "rendering: 'background', ";
 
-      $eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['date']}', $enddate $extradata}, ";
+      $eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['startdate']}', $enddate $extradata}, ";
     endforeach;
 
     if($this->eventClickCode)
-      $eventClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_start = calEvent.start;
-        var event_end = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventClickCode;
+      $eventClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_startdate = calEvent.start;
+        var event_enddate = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventClickCode;
         return false;";
 
     if($this->eventRightClickCode)
-      $eventRightClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_start = calEvent.start;
-        var event_end = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventRightClickCode;
+      $eventRightClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_startdate = calEvent.start;
+        var event_enddate = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventRightClickCode;
         return false;";
 
-    if($this->dayClickCode)
-      $dayClickCode = "var act_view = view.name; var clicked_date = date.format(); $this->dayClickCode";
+    if($this->dayClickCode):
+      $dayClickCode = $this->dayClickCode === true ? 'window.location.href="?action=new&dtime=" + clicked_date;' : $this->dayClickCode;
+      $dayClickCode = "var act_view = view.name; var clicked_date = date.format(); $dayClickCode";
+    endif;
 
-    if($this->dragDropCode)
-      $dragDropCode = "var event_title = event.title; var new_starttime = event.start.format(); var event_id = event.id;
-                       $this->dragDropCode";
+    if($this->dragDropCode):
+      $dragDropCode = $this->dragDropCode === true ? '$.ajax("?action=fullcalendar_move&object_id=" + event_id + "&startdate=" + new_startdate);' : $this->dragDropCode;
+      $dragDropCode = "var event_title = event.title; var new_startdate = event.start.format(); var event_id = event.id;
+                       $dragDropCode";
+    endif;
 
-    if($this->resizeCode)
-      $resizeCode = "var event_title = event.title; var event_id = event.id; var new_endtime = event.end.format();
-                     $this->resizeCode";
+    if($this->resizeCode):
+      $resizeCode = $this->resizeCode === true ? '$.ajax("user_appointment.php?action=resize&object_id=" + event_id + "&enddate=" + new_enddate);' : $this->resizeCode;
+      $resizeCode = "var event_title = event.title; var event_id = event.id; var new_enddate = event.end.format();
+                     $resizeCode";
+    endif;
 
     if($this->eventBackgroundColor) $extracode .= "eventBackgroundColor: '$this->eventBackgroundColor', eventBorderColor: '$this->eventBackgroundColor', ";
 
