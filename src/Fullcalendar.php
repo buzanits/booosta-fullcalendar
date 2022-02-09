@@ -15,7 +15,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
   protected $slotDuration;
   protected $id_prefix = 'fullcalendar';
 
-  public function __construct($name = null, $events = null, $events_url = null)
+  public function __construct($name = 'calendar', $events = null, $events_url = null)
   {
     parent::__construct($name, $events, $events_url);
 
