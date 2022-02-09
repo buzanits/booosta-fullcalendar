@@ -20,8 +20,8 @@ class Fullcalendar extends \booosta\calendar\Calendar
     parent::__construct($name, $events, $events_url);
 
     $this->bg_events = [];
-    $this->defaultview = 'month';
-    $this->availableViews = 'month,agendaWeek,agendaDay';
+    $this->defaultview = 'dayGridMonth';
+    $this->availableViews = 'dayGridMonth,dayGridWeek,dayGridDay';
   }
 
   public function after_instanciation()
@@ -94,8 +94,8 @@ class Fullcalendar extends \booosta\calendar\Calendar
         return false;";
 
     if($this->dayClickCode):
-      $dayClickCode = $this->dayClickCode === true ? 'window.location.href="?action=new&dtime=" + clicked_date;' : $this->dayClickCode;
-      $dayClickCode = "var act_view = view.name; var clicked_date = date.format(); $dayClickCode";
+      $dayClickCode = $this->dayClickCode === true ? 'window.location.href += "/new/" + clicked_date;' : $this->dayClickCode;
+      $dayClickCode = "var act_view = info.view.name; var clicked_date = info.dateStr; $dayClickCode";
     endif;
 
     if($this->dragDropCode):
@@ -120,17 +120,17 @@ class Fullcalendar extends \booosta\calendar\Calendar
     if($this->slotDuration) $extracode .= "slotDuration: '$this->slotDuration', ";
 
     if($this->hide_days || $this->hide_days === '0') $extracode .= "hiddenDays: [ $this->hide_days ], ";
-    if($this->minTime) $extracode .= "minTime: '$this->minTime', ";
-    if($this->maxTime) $extracode .= "maxTime: '$this->maxTime', ";
+    if($this->minTime) $extracode .= "slotMinTime: '$this->minTime', ";
+    if($this->maxTime) $extracode .= "slotMaxTime: '$this->maxTime', ";
 
-    $code = "var $this->id = new FullCalendar.Calendar($('#$this->id'), {
-      header: { left: 'prev,next today', center: 'title', right: '$this->availableViews' },
-      locale: '$this->lang', buttonIcons: false, weekNumbers: true, editable: true, eventLimit: true, timeFormat: 'H:mm',
-      slotLabelFormat: 'H:mm', defaultView: '$this->defaultview', $extracode
-      events: [ $eventlist ], eventClick: function(calEvent, jsEvent, view) { $eventClickCode },
-      eventRightclick: function(calEvent, jsEvent, view) { $eventRightClickCode },
-      dayClick: function(date, jsEvent, view) { $dayClickCode }, eventDrop: function(event, delta, revertFunc) { $dragDropCode },
-      eventResize: function(event, delta, revertFunc) { $resizeCode },
+    $code = "var $this->id = new FullCalendar.Calendar($('#$this->id')[0], {
+      headerToolbar: { start: 'prev,next today', center: 'title', end: '$this->availableViews' },
+      locale: '$this->lang', buttonIcons: false, weekNumbers: true, editable: true,
+      eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: false },
+      slotLabelFormat: 'H:mm', initialView: '$this->defaultview', selectable: true, $extracode
+      events: [ $eventlist ], eventClick: function(info) { $eventClickCode },
+      dateClick: function(info) { $dayClickCode }, eventDrop: function(info) { $dragDropCode },
+      eventResize: function(info) { $resizeCode },
       }); $this->id.render();
     ";
 
