@@ -21,7 +21,8 @@ class Fullcalendar extends \booosta\calendar\Calendar
 
     $this->bg_events = [];
     $this->defaultview = 'dayGridMonth';
-    $this->availableViews = 'dayGridMonth,dayGridWeek,dayGridDay';
+    $this->availableViews = 'dayGridMonth,timeGridWeek,timeGridDay';
+    $this->set_eventBackgroundColor = $this->$eventBackgroundColor ?? $this->config('calendarEventColor') ?? 'blue';
   }
 
   public function after_instanciation()
@@ -110,7 +111,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
                      $resizeCode";
     endif;
 
-    if($this->eventBackgroundColor) $extracode .= "eventBackgroundColor: '$this->eventBackgroundColor', eventBorderColor: '$this->eventBackgroundColor', ";
+    if($this->eventBackgroundColor) $extracode .= "eventColor: '$this->eventBackgroundColor', ";
 
     if($this->date):
       if($this->defaultview == null) $this->defaultview = 'agendaDay';
@@ -125,9 +126,9 @@ class Fullcalendar extends \booosta\calendar\Calendar
 
     $code = "var $this->id = new FullCalendar.Calendar($('#$this->id')[0], {
       headerToolbar: { start: 'prev,next today', center: 'title', end: '$this->availableViews' },
-      locale: '$this->lang', buttonIcons: false, weekNumbers: true, editable: true,
+      locale: '$this->lang', buttonIcons: false, weekNumbers: true, editable: true, eventDisplay: 'block',
       eventTimeFormat: { hour: 'numeric', minute: '2-digit', meridiem: false },
-      slotLabelFormat: 'H:mm', initialView: '$this->defaultview', selectable: true, $extracode
+      initialView: '$this->defaultview', selectable: true, $extracode
       events: [ $eventlist ], eventClick: function(info) { $eventClickCode },
       dateClick: function(info) { $dayClickCode }, eventDrop: function(info) { $dragDropCode },
       eventResize: function(info) { $resizeCode },
