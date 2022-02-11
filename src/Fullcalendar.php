@@ -61,8 +61,10 @@ class Fullcalendar extends \booosta\calendar\Calendar
 
   public function get_js()
   {
+    $b = $this->baseurl ?? '';
     $eventlist = '';
     ksort($this->events);
+
     foreach($this->events as $event):
       $d = $event->get_data();
       #\booosta\debug($d);
@@ -84,10 +86,12 @@ class Fullcalendar extends \booosta\calendar\Calendar
       $eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['startdate']}', $enddate $extradata}, ";
     endforeach;
 
-    if($this->eventClickCode)
-      $eventClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_startdate = calEvent.start;
-        var event_enddate = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventClickCode;
+    if($this->eventClickCode):
+      $eventClickCode = $this->eventClickCode === true ? "window.location.href = '$b?action=edit&object_id=' + event_id;" : $this->eventClickCode;
+      $eventClickCode = "var event_title = info.event.title; var act_view = info.view.name; var event_startdate = info.event.startStr;
+        var event_enddate = info.event.end; var event_url = info.event.url; var event_id = info.event.id; $eventClickCode;
         return false;";
+    endif;
 
     if($this->eventRightClickCode)
       $eventRightClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_startdate = calEvent.start;
@@ -95,19 +99,19 @@ class Fullcalendar extends \booosta\calendar\Calendar
         return false;";
 
     if($this->dayClickCode):
-      $dayClickCode = $this->dayClickCode === true ? 'window.location.href += "/new/" + clicked_date;' : $this->dayClickCode;
+      $dayClickCode = $this->dayClickCode === true ? "window.location.href = '$b?action=new&startdate=' + encodeURIComponent(clicked_date);" : $this->dayClickCode;
       $dayClickCode = "var act_view = info.view.name; var clicked_date = info.dateStr; $dayClickCode";
     endif;
 
     if($this->dragDropCode):
-      $dragDropCode = $this->dragDropCode === true ? '$.ajax("?action=fullcalendar_move&object_id=" + event_id + "&startdate=" + new_startdate);' : $this->dragDropCode;
-      $dragDropCode = "var event_title = event.title; var new_startdate = event.start.format(); var event_id = event.id;
+      $dragDropCode = $this->dragDropCode === true ? "$.ajax('$b?action=calendar_move&object_id=' + event_id + '&startdate=' + encodeURIComponent(new_startdate));" : $this->dragDropCode;
+      $dragDropCode = "var event_title = info.event.title; var new_startdate = info.event.startStr; var event_id = info.event.id;
                        $dragDropCode";
     endif;
 
     if($this->resizeCode):
-      $resizeCode = $this->resizeCode === true ? '$.ajax("user_appointment.php?action=resize&object_id=" + event_id + "&enddate=" + new_enddate);' : $this->resizeCode;
-      $resizeCode = "var event_title = event.title; var event_id = event.id; var new_enddate = event.end.format();
+      $resizeCode = $this->resizeCode === true ? "$.ajax('$b?action=calendar_resize&object_id=' + event_id + '&enddate=' + encodeURIComponent(new_enddate));" : $this->resizeCode;
+      $resizeCode = "var event_title = info.event.title; var event_id = info.event.id; var new_enddate = info.event.endStr;
                      $resizeCode";
     endif;
 
