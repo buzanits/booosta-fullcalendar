@@ -81,6 +81,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
       if($d['color']) $extradata .= "backgroundColor: '{$d['color']}', borderColor: '{$d['color']}', ";
       if($d['readonly']) $extradata .= 'editable: false, ';
       if($d['background']) $extradata .= "rendering: 'background', ";
+      if($d['allday']) $extradata .= "allDay: true, ";
 
       $eventlist .= "{ id: {$d['id']}, title: '{$d['name']}', start: '{$d['startdate']}', $enddate $extradata}, ";
     endforeach;
