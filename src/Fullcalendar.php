@@ -9,7 +9,7 @@ class Fullcalendar extends \booosta\calendar\Calendar
   use moduletrait_fullcalendar;
 
   protected $bg_events;
-  protected $eventClickCode, $eventRightClickCode, $dayClickCode, $dragDropCode, $resizeCode;
+  protected $eventClickCode, $dayClickCode, $dragDropCode, $resizeCode;
   protected $eventBackgroundColor, $defaultview;
   protected $hide_days, $minTime, $maxTime, $availableViews;
   protected $slotDuration;
@@ -37,7 +37,6 @@ class Fullcalendar extends \booosta\calendar\Calendar
 
   public function set_defaultview($defaultview) { $this->defaultview = $defaultview; }
   public function set_eventClickCode($code) { $this->eventClickCode = $code; }
-  public function set_eventRightClickCode($code) { $this->eventRightClickCode = $code; }
   public function set_dayClickCode($code) { $this->dayClickCode = $code; }
   public function set_dragDropCode($code) { $this->dragDropCode = $code; }
   public function set_resizeCode($code) { $this->resizeCode = $code; }
@@ -92,11 +91,6 @@ class Fullcalendar extends \booosta\calendar\Calendar
         var event_enddate = info.event.end; var event_url = info.event.url; var event_id = info.event.id; $eventClickCode;
         return false;";
     endif;
-
-    if($this->eventRightClickCode)
-      $eventRightClickCode = "var event_title = calEvent.title; var act_view = view.name; var event_startdate = calEvent.start;
-        var event_enddate = calEvent.end; var event_url = calEvent.url; var event_id = calEvent.id; $this->eventRightClickCode;
-        return false;";
 
     if($this->dayClickCode):
       $dayClickCode = $this->dayClickCode === true ? "window.location.href = '$b?action=new&startdate=' + encodeURIComponent(clicked_date);" : $this->dayClickCode;
