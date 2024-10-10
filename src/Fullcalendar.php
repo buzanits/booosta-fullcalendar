@@ -134,11 +134,6 @@ class Fullcalendar extends \booosta\calendar\Calendar
       }); $this->id.render();
     ";
 
-    if(is_object($this->topobj) && is_a($this->topobj, "\\booosta\\webapp\\webapp")):
-      $this->topobj->add_jquery_ready($code);
-      return '';
-    else:
-      return "\$(document).ready(function(){ $code });";
-    endif;
+    return $this->get_ready_code($code);
   }
 }
