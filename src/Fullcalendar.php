@@ -8,6 +8,8 @@ class Fullcalendar extends \booosta\calendar\Calendar
 {
   use moduletrait_fullcalendar;
 
+  protected $needs_jquery = true;
+
   protected $bg_events;
   protected $eventClickCode, $dayClickCode, $dragDropCode, $resizeCode;
   protected $eventBackgroundColor, $defaultview;

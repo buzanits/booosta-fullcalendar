@@ -7,7 +7,7 @@ trait webapp
 {
   protected function preparse_fullcalendar()
   {
-    $libpath = 'vendor/npm-asset/fullcalendar';
+    $libpath = 'vendor/fullcalendar/fullcalendar';
 
     if($this->moduleinfo['fullcalendar'])
       $this->add_includes("
