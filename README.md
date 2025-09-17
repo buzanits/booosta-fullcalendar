@@ -2,19 +2,19 @@
 
 This module provides a calendar class. It uses fullcalendar from fullcalendar.io
 
-It can be used with the Booosta PHP framework.
+It can be used with the Booosta PHP framework or as standalone PHP class.
 
 Booosta allows to develop PHP web applications quick. It is mainly designed for small web applications. It does not provide a strict MVC distinction. Although the MVC concepts influence the framework. Templates, data objects can be seen as the Vs and Ms of MVC.
 
 From version 4 on it resides on Github and is available from Packagist under buzanits/booosta-webapp .
 
-## Installation
+## Installation with Booosta
 
 ```
 composer require booosta\fullcalendar
 ```
 
-## Instanciation
+## Instanciation with Booosta
 
 ```
 $cal = $this->makeInstance('fullcalendar', $name, $events, $events_url);
@@ -22,6 +22,30 @@ $cal = $this->makeInstance('fullcalendar', $name, $events, $events_url);
 # [...]
 
 $this->TPL['calendar'] = $cal->get_html();
+```
+
+## Installation as standalone object
+
+```
+# if you already have a composer.json in your directory, you can omit the first step!
+composer require booosta/base
+composer config repositories.asset-packagist composer https://asset-packagist.org
+composer require booosta/fullcalendar
+```
+
+## Instanciation as standalone object
+
+```
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use \booosta\fullcalendar\Fullcalendar;
+
+$cal = new Fullcalendar($name, $events, $events_url);
+
+# [...]
+
+print $cal->loadHTML();
 ```
 
 ## Usage
