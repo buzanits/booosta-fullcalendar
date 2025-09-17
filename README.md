@@ -23,6 +23,7 @@ $cal = $this->makeInstance('fullcalendar', $name, $events, $events_url);
 
 $this->TPL['calendar'] = $cal->get_html();
 ```
+`$events` is an array of arrays in the form that is described in the "Usage" section beneath. `$events_url` is not used anymore and there for backwards compatibility.
 
 ## Installation as standalone object
 
