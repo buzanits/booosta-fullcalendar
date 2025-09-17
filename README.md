@@ -11,7 +11,7 @@ From version 4 on it resides on Github and is available from Packagist under buz
 ## Installation with Booosta
 
 ```
-composer require booosta\fullcalendar
+composer require booosta/fullcalendar
 ```
 
 ## Instanciation with Booosta
